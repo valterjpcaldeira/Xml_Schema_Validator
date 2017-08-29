@@ -4,7 +4,7 @@
 
 A Java App to validate big xml and gml file using a schema.
 
-Just to use, you can download the jar file and run it at the same directory that the files you want to analise and the schema. The names must be like this:
+If you want just use it, you can download the jar file [here](https://github.com/valterjpcaldeira/Xml_Schema_Validator/blob/master/jar_file/xsdValidator.jar) and run it at the same directory that the files you want to analise and the schema. The names must be like this:
 
 * **Schema.xsd** - The Schema used to validate the XML file
 * **SchemaGML.xsd** - The Schema used to validate the GML file
