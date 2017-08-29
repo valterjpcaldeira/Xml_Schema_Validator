@@ -1,6 +1,3 @@
-# Xml_Schema_Validator
-A Java App to validate big xml and gml file using a schema.
-
 # Xml Schema Validator [![Badge](https://img.shields.io/badge/built%20with-wedeploy-00d46a.svg?style=flat)](http://wedeploy.com)
 
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
