@@ -1,6 +1,4 @@
-# Xml Schema Validator [![Badge](https://img.shields.io/badge/built%20with-wedeploy-00d46a.svg?style=flat)](http://wedeploy.com)
-
-[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
+# Xml Schema Validator [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=102)](https://github.com/ellerbrock/open-source-badge/)
 
 [![forthebadge](http://forthebadge.com/badges/built-by-hipsters.svg)](http://forthebadge.com)
 
