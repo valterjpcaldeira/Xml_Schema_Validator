@@ -4,6 +4,7 @@ import java.awt.Dialog.ModalityType;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 
 import javax.swing.JDialog;
@@ -50,11 +51,47 @@ public class XsdValidator {
 		Source xmlFile = null;
 		Source gmlFile = null;
 		message = "Sem erros de Validação do "+options[n];
+		
+		String dirName = System.getProperty("user.dir");
+		
+		System.out.println(dirName);
+		
+		File dir = new File(dirName);
+		
+		File[] filesGML = dir.listFiles(new FilenameFilter() { 
+            public boolean accept(File dir, String filename)
+                 { return filename.endsWith(".gml"); }
+			} );
+		
+		File[] filesXML = dir.listFiles(new FilenameFilter() { 
+            public boolean accept(File dir, String filename)
+                 { return filename.endsWith(".xml") && !filename.equalsIgnoreCase("pom.xml"); }
+			} );
+		
+		if(filesGML.length > 1){
+			
+			JOptionPane.showMessageDialog(dialog,
+					"Demasiados ficheiros do tipo GML");
+			dialog.dispose();
+			System.exit(0);
+		}
+		
+		if(filesXML.length > 1){
+			
+			JOptionPane.showMessageDialog(dialog,
+					"Demasiados ficheiros do tipo XML");
+			dialog.dispose();
+			System.exit(0);
+		}
 
-		File file = new File("xml.xml");
-		File fileGml = new File("gml.gml");
+		File file = filesXML[0];
+		File fileGml = filesGML[0];
 
+		//XML
 		if (n == 0) {
+			
+			JOptionPane.showMessageDialog(dialog,
+					"Ficheiro XML a ser usado: "+file.getName());
 
 			try {
 				xmlFile = new StreamSource(file);
@@ -97,7 +134,11 @@ public class XsdValidator {
 			System.gc();
 			Runtime.getRuntime().freeMemory();
 
+		//GML
 		} else {
+			
+			JOptionPane.showMessageDialog(dialog,
+					"Ficheiro GML a ser usado: "+fileGml.getName());
 
 			try {
 				gmlFile = new StreamSource(fileGml);

@@ -8,8 +8,8 @@ If you want just use it, you can download the jar file [here](https://github.com
 
 * **Schema.xsd** - The Schema used to validate the XML file
 * **SchemaGML.xsd** - The Schema used to validate the GML file
-* **gml.gml** - The gml file to be validated
-* **xml.xml** - The xml file to be validated
+* **___.gml** - The gml file to be validated
+* **___.xml** - The xml file to be validated
 
 
 
