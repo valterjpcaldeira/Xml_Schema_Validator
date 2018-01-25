@@ -29,3 +29,7 @@ xsdValidatoer/SchemaGML.xsd
 xsdValidatoer/.settings/org.eclipse.jdt.core.prefs
 xsdValidatoer/.settings/org.eclipse.m2e.core.prefs
 xsdValidatoer/xml.xml
+
+workspace/\.recommenders/index/http___download_eclipse_org_recommenders_models_neon_/
+
+workspace/\.recommenders/caches/

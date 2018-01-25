@@ -8,6 +8,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.xml.XMLConstants;
@@ -30,76 +31,77 @@ public class XsdValidator {
 		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
 		dialog.toFront();
 		dialog.setFocusable(true);
+		JFrame frame = new JFrame();
 
 		// Custom button text
-		Object[] options = { "XML", "GML", "Cancelar" };
-		int n = JOptionPane.showOptionDialog(dialog,
-				"Deseja executar agora a validação do GML ou XML?",
-				"Validação XML/GML", JOptionPane.YES_NO_CANCEL_OPTION,
-				JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
+		Object[] options = { "Escolher .xsd", "Cancelar" };
+		int n = JOptionPane.showOptionDialog(dialog, "Escolha o ficheiro de Regras (.xsd):", "Validação XML/GML",
+				JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
 
 		System.out.println("n =" + n);
 		String message = "";
-		try{
-
-		if (n == 2) {
-			dialog.dispose();
-			System.exit(0);
-		}
-
+		File Xsdfile = null;
 		Schema schema = null;
 		Source xmlFile = null;
-		Source gmlFile = null;
-		message = "Sem erros de Validação do "+options[n];
 		
-		String dirName = System.getProperty("user.dir");
-		
-		System.out.println(dirName);
-		
-		File dir = new File(dirName);
-		
-		File[] filesGML = dir.listFiles(new FilenameFilter() { 
-            public boolean accept(File dir, String filename)
-                 { return filename.endsWith(".gml"); }
-			} );
-		
-		File[] filesXML = dir.listFiles(new FilenameFilter() { 
-            public boolean accept(File dir, String filename)
-                 { return filename.endsWith(".xml") && !filename.equalsIgnoreCase("pom.xml"); }
-			} );
-		
-		if(filesGML.length > 1){
-			
-			JOptionPane.showMessageDialog(dialog,
-					"Demasiados ficheiros do tipo GML");
-			dialog.dispose();
-			System.exit(0);
-		}
-		
-		if(filesXML.length > 1){
-			
-			JOptionPane.showMessageDialog(dialog,
-					"Demasiados ficheiros do tipo XML");
-			dialog.dispose();
-			System.exit(0);
-		}
 
-		File file = filesXML[0];
-		File fileGml = filesGML[0];
+		try {
 
-		//XML
-		if (n == 0) {
+			if (n == 1) {
+				dialog.dispose();
+				System.exit(0);
+			}
 			
-			JOptionPane.showMessageDialog(dialog,
-					"Ficheiro XML a ser usado: "+file.getName());
+			//Get xsd FIle
+
+			JFileChooser fc = new JFileChooser();
+
+			int returnVal = fc.showOpenDialog(frame);
+
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				Xsdfile = fc.getSelectedFile();
+				// This is where a real application would open the file.
+				System.out.println("Opening: " + Xsdfile.getName() + ".");
+			} else {
+				System.out.println("Open command cancelled by user.");
+			}
+
+			// Custom button text
+			Object[] options2 = { "Escolher ficheiro", "Cancelar" };
+			int n2 = JOptionPane.showOptionDialog(dialog, "Escolha o ficheiro para ser validado (.xml ou .gml):",
+					"Validação XML/GML", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options2,
+					options[1]);
+
+			System.out.println("n =" + n2);
+			String message2 = "";
+
+			if (n2 == 1) {
+				dialog.dispose();
+				System.exit(0);
+			}
+			
+			// GET XM or GML
+
+			JFileChooser fc2 = new JFileChooser();
+
+			File XmlGmlfile = null;
+
+			int returnVal2 = fc2.showOpenDialog(frame);
+
+			if (returnVal2 == JFileChooser.APPROVE_OPTION) {
+				XmlGmlfile = fc2.getSelectedFile();
+				// This is where a real application would open the file.
+				System.out.println("Opening: " + XmlGmlfile.getName() + ".");
+				message = "Sem erros de Validação do "+XmlGmlfile.getName();
+			} else {
+				System.out.println("Open command cancelled by user.");
+			}
 
 			try {
-				xmlFile = new StreamSource(file);
-				SchemaFactory schemaFactory = SchemaFactory
-						.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+				xmlFile = new StreamSource(XmlGmlfile);
+				SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
-				File f = new File("Schema.xsd");
-				schema = schemaFactory.newSchema(f);
+				schema = schemaFactory.newSchema(Xsdfile);
 			} catch (SAXException e1) {
 				e1.printStackTrace();
 				message = "Não foi possivel encontrar o ficheiro Schema.xsd";
@@ -110,15 +112,14 @@ public class XsdValidator {
 				validator.validate(xmlFile);
 			} catch (SAXParseException e) {
 				try {
-					message = e.getLocalizedMessage() + " (linha:"
-							+ e.getLineNumber() + ")";
+					message = e.getLocalizedMessage() + " (linha:" + e.getLineNumber() + ")";
 				} catch (Exception ex) {
 					message = e.getMessage();
 					ex.printStackTrace();
 				}
 
 			} catch (SAXException e) {
-				
+
 				message = e.getLocalizedMessage();
 
 			} catch (Exception e) {
@@ -134,53 +135,16 @@ public class XsdValidator {
 			System.gc();
 			Runtime.getRuntime().freeMemory();
 
-		//GML
-		} else {
-			
-			JOptionPane.showMessageDialog(dialog,
-					"Ficheiro GML a ser usado: "+fileGml.getName());
-
-			try {
-				gmlFile = new StreamSource(fileGml);
-				SchemaFactory schemaFactory = SchemaFactory
-						.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-
-				File f = new File("SchemaGML.xsd");
-				schema = schemaFactory.newSchema(f);
-
-				Validator validatorGML = schema.newValidator();
-
-				validatorGML.validate(gmlFile);
-
-			} catch (SAXParseException e) {
-				e.printStackTrace();
-
-				message = e.getLocalizedMessage() + " (linha:"
-						+ e.getLineNumber() + ")";
-
-			} catch (SAXException e) {
-
-				e.printStackTrace();
-
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				message = "Não foi possivel encontrar o ficheiro SchemaGML.xsd ou gml.gml";
-			}
-
-		}
-		
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 			message = "Ocorreu um erro! Verifique que tem os ficheiros na pasta";
 		}
 
-		JOptionPane.showMessageDialog(dialog,
-				message);
+		JOptionPane.showMessageDialog(dialog, message);
 
 		dialog.dispose();
 		System.exit(0);
 
 	}
-	
 
 }
